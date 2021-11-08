@@ -40,7 +40,12 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'store',
+    'graphene_django',
 ]
+
+GRAPHENE = {
+    'SCHEMA': 'core.schema.schema' # Where your Graphene schema lives
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
