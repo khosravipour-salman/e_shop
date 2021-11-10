@@ -12,7 +12,7 @@ class ImageModelAdminInline(admin.TabularInline):
 
 class BookModelAdmin(admin.ModelAdmin):
     model = BookModel
-    list_display = ('name', 'age_group', 'in_stock', 'page_number', 'description', 'price',)
+    list_display = ('name', 'age_group', 'in_stock', 'page_number', 'price', 'description',)
     inlines = [ImageModelAdminInline, ]
 
 
