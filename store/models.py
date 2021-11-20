@@ -1,6 +1,8 @@
 from django.contrib.auth.models import User
 from django.db import models
 from django.utils import timezone
+from decimal import Decimal
+from django.db.models import F, Sum
 
 
 class AuthorModel(models.Model):
@@ -78,3 +80,44 @@ class WishListModel(models.Model):
 
     def __str__(self):
         return f'{self.user.username}\'s wishlist'
+
+
+class OrderModel(models.Model):
+    STATUS_CHOICES = (
+        ('Prepayment', 'prepayment'),
+        ('Inprocess', 'inprocess'),
+        ('Delivered', 'delivered'),
+        ('Canceled', 'canceled'),
+    )
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='orders')
+    city = models.CharField(null=True, max_length=32)
+    address = models.TextField(null=True, )
+    delivery_date = models.DateField(null=True, )
+    phone_number = models.CharField(null=True, max_length=11)
+    postal_code = models.CharField(null=True, max_length=10)
+    national_code = models.CharField(null=True, max_length=10)
+    status = models.CharField(null=True, max_length=12, choices=STATUS_CHOICES, default=STATUS_CHOICES[0][0])
+    total_price = models.DecimalField(default=0, max_digits=24, decimal_places=0, null=True)
+    total_quantity = models.DecimalField(default=0, max_digits=10, decimal_places=0, null=True)
+
+    @property
+    def calc_total_price(self):
+        return self.books.aggregate(
+            total_price=Sum(F('quantity') * F('book__price'))
+        )['total_price'] or Decimal('0')
+
+    @property
+    def calc_total_quantity(self):
+        return self.books.aggregate(
+            total_quantity=Sum(F('quantity'))
+        )['total_quantity'] or Decimal('0')
+
+
+class ShopBasketModel(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_shop_basket')
+    book = models.ForeignKey(BookModel, related_name='baskets', on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField(default=0)
+    order = models.ForeignKey(OrderModel, on_delete=models.CASCADE, related_name="books", null=True)
+
+    def __str__(self):
+        return f'{self.user.username}\' basket'

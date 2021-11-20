@@ -49,7 +49,6 @@ INSTALLED_APPS = [
 GRAPHENE = {
     'SCHEMA': 'core.schema.schema'  # Where your Graphene schema lives
 }
-
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -58,7 +57,11 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+    # My Custom Middleware
+    'store.middleware.CookieMiddleware',
 ]
+
 
 ROOT_URLCONF = 'core.urls'
 TEMPLATE_DIR = os.path.join(BASE_DIR, 'templates')

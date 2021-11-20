@@ -1,18 +1,45 @@
 from django.contrib import admin
-from store.models import (BookModel, AuthorModel,
-                          CategoryModel, CommentModel,
-                          ImageModel, PublisherModel)
+from store.models import (
+    BookModel, AuthorModel,
+    CategoryModel, CommentModel,
+    ImageModel, PublisherModel,
+    WishListModel, ShopBasketModel,
+    OrderModel,
+)
+
+
+class ShopBasketAdmin(admin.ModelAdmin):
+    model = ShopBasketModel
+    list_display = ('id', 'user', 'book', 'quantity', )
+
+
+admin.site.register(ShopBasketModel, ShopBasketAdmin)
+
+
+class OrderAdmin(admin.ModelAdmin):
+    model = OrderModel
+    list_display = ('id', 'city', 'address', 'delivery_date', 'phone_number', 'postal_code', 'national_code', 'status',)
+
+
+admin.site.register(OrderModel, OrderAdmin)
+
+
+class WishListAdmin(admin.ModelAdmin):
+    model = WishListModel
+    list_display = ('id', )
+
+
+admin.site.register(WishListModel, WishListAdmin)
 
 
 class ImageModelAdminInline(admin.TabularInline):
     model = ImageModel
-    # readonly_fields = ('title', 'url', 'display_score')
-    # fields = ('title', 'url', 'display_score')
+    extra = 2
 
 
 class BookModelAdmin(admin.ModelAdmin):
     model = BookModel
-    list_display = ('name', 'age_group', 'in_stock', 'page_number', 'price', 'description',)
+    list_display = ('id', 'name', 'age_group', 'in_stock', 'page_number', 'price', 'description',)
     inlines = [ImageModelAdminInline, ]
 
 
